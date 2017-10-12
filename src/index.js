@@ -80,6 +80,8 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        move: [],
+        player: null,
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -101,11 +103,13 @@ class Game extends React.Component {
       return;
     }
 
-    // Change state adding the current squares to history
+    // Change state adding the current squares, move and player to history
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
         squares: squares,
+        move: oneDimToTwoDimCoor(i),
+        player: squares[i],
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -137,7 +141,7 @@ class Game extends React.Component {
     // Dynamic list for history moves
     const moves = history.map((step, move) => {
       const desc = move ?
-        'Go to move #' + move :
+        'Go to move #' + move + ' (' + step.player + ' : '  + step.move + ')' :
         'Go to game start';
 
       // key attribute for performance issues
@@ -208,8 +212,27 @@ function calculateWinner(squares) {
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a];
     }
-
   }
 
   return null;
+}
+
+/**
+ * Convert a one dimensionnal board coordinate (default) of a square to two dimensionnal coordinate
+ * Example :
+ * 0 1 2    [1,1] [1,2] [1,3]
+ * 3 4 5 => [2,1] [2,2] [2,3]
+ * 6 7 8    [3,1] [3,2] [3,3]
+ * 
+ * @param  {Number} i One dimensionnal board coordinate
+ * @return {Number}   Two dimensionnal board coordinates
+ */
+function oneDimToTwoDimCoor(i) {
+  if (i < 3) { // First line
+    return [1, i + 1];
+  } else if (i < 6) { // Second line
+    return [2, i - 2];
+  } else { // Third line
+    return [3, i - 5];
+  }
 }
