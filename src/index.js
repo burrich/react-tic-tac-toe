@@ -147,7 +147,8 @@ class Game extends React.Component {
       // key attribute for performance issues
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>
+          <button onClick={() => this.jumpTo(move)} 
+                  className={move === this.state.stepNumber ? 'move-selected' : ''}>
             {desc}
           </button>
         </li>
