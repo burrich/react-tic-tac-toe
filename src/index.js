@@ -28,12 +28,22 @@ class Board extends React.Component {
    * @return {Object}   A Square element
    */
   renderSquare(i) {
-    return (
-      <Square 
-        value={this.props.squares[i]} 
-        onClick={() => this.props.onClick(i)}
-      />
-    );
+    return <Square key={i} value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+  }
+
+  /**
+   * Rendering a squares row
+   * 
+   * @param  {Number} row Index of the row to render
+   * @return {Array}      An array of 3 squares components
+   */
+  renderSquaresRow(row) {
+    const rowElts = [];
+    for (let col = 0; col < 3; col++) {
+      rowElts.push(this.renderSquare(row*3 + col)); // Passing square coordinate (from 0 to 8)
+    }
+
+    return rowElts;
   }
 
   /**
@@ -42,25 +52,16 @@ class Board extends React.Component {
    * @return {Object} Board elements
    */
   render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
+    const boardRows = [];
+    for (let row = 0; row < 3; row++) {
+      boardRows.push(
+        <div key={row} className="board-row">
+          {this.renderSquaresRow(row)}
         </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
+      );
+    }
+
+    return <div>{boardRows}</div>;
   }
 }
 
