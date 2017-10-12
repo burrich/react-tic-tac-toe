@@ -2,6 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+/**
+ * Square functionnal component (equivalent to class component when no constructor needed)
+ * 
+ * @param  {Object} props Component parameters
+ * @return {Object}       Component element to render
+ */
 function Square(props) {
   return (
     <button className="square" onClick={props.onClick}>
@@ -10,7 +16,17 @@ function Square(props) {
   );
 }
 
+/**
+ * Board Class for rendering all squares
+ */
 class Board extends React.Component {
+
+  /**
+   * Rendering a square component
+   * 
+   * @param  {Number} i Index of the square to render
+   * @return {Object}   A Square element
+   */
   renderSquare(i) {
     return (
       <Square 
@@ -20,6 +36,11 @@ class Board extends React.Component {
     );
   }
 
+  /**
+   * Rendering Board component
+   *
+   * @return {Object} Board elements
+   */
   render() {
     return (
       <div>
@@ -43,7 +64,17 @@ class Board extends React.Component {
   }
 }
 
+
+/**
+ * Game Class for rendering the board
+ * Manage an history of moves
+ */
 class Game extends React.Component {
+  /**
+   * Constructor
+   * 
+   * @param  {Object} props Component parameters
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -55,15 +86,22 @@ class Game extends React.Component {
     }
   }
 
+  /**
+   * Handle square clicks
+   * 
+   * @param {Number} i Index of the clicked square
+   */
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
-    const squares = current.squares.slice();
+    const squares = current.squares.slice(); // Shallow copy for immutability
 
+    // Exit process if the game is finished
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
 
+    // Change state adding the current squares to history
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
@@ -74,6 +112,11 @@ class Game extends React.Component {
     });
   }
 
+  /**
+   * Jump to a previous or next move by updating the stepNumber 
+   * 
+   * @param {Number} step Index of the move 
+   */
   jumpTo(step) {
     this.setState({
       stepNumber: step,
@@ -81,16 +124,23 @@ class Game extends React.Component {
     });
   }
 
+  /**
+   * Rendering Game component
+   *
+   * @return {Object} Component elements
+   */
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner  = calculateWinner(current.squares);
 
+    // Dynamic list for history moves
     const moves = history.map((step, move) => {
       const desc = move ?
         'Go to move #' + move :
         'Go to game start';
 
+      // key attribute for performance issues
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>
@@ -100,6 +150,7 @@ class Game extends React.Component {
       );
     });
 
+    // Display the winner or the next player
     let status;
     if (winner) {
       status = 'Winner : ' + winner;
@@ -107,6 +158,7 @@ class Game extends React.Component {
       status = 'Next player : ' + (this.state.xIsNext ? 'X' : 'O');
     }
 
+    // Return elements
     return (
       <div className="game">
         <div className="game-board">
@@ -126,11 +178,18 @@ class Game extends React.Component {
 
 // ========================================
 
+// Adding game component to the DOM
 ReactDOM.render(
   <Game />,
   document.getElementById('root')
 );
 
+/**
+ * Return the winner or null
+ * 
+ * @param  {Array} squares Fill with 'X', 'O' or null
+ * @return {String}        Return the winner ('X', 'O' or null)
+ */
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
