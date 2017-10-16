@@ -187,7 +187,7 @@ class Game extends React.Component {
       moves.reverse();
     }
 
-    // Display the winner or the next player
+    // Display the winner (and get winner squares) or the next player
     let status, winnerSquares;
     if (winner) {
       status = 'Winner : ' + winner.player;
@@ -228,10 +228,10 @@ ReactDOM.render(
 );
 
 /**
- * Return the winner or null
+ * Return the winner object or null
  * 
  * @param  {Array} squares Fill with 'X', 'O' or null
- * @return {String}        Return the winner ('X', 'O' or null)
+ * @return {Object}        Return the winner player ('X', 'O' or null) and winner squares
  */
 function calculateWinner(squares) {
   const lines = [
